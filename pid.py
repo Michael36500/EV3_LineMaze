@@ -11,23 +11,23 @@ m_r = Motor(Port.C)
 cols = ColorSensor(Port.S4)
 
 
-up = 33
-down = 2
+up = 9
+down = 3
 
 targ = (up + down) // 2
 print(targ)
 
 previous_er = 0
 integ = 0
-base_speed = 25
+base_speed = 15
 
 while True:
 
     refl = cols.reflection()
     print(refl)
 
-    p = 2
-    i = 0.008
+    p = 8
+    i = 0.01
     d = 0.01
 
     error = refl - targ
