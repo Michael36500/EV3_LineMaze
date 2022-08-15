@@ -22,7 +22,7 @@ m_ld = Motor(Port.D)
 
 
 # vstupuju  čísla, a točím motory
-def run_m (lu, ru, rd, ld):
+def run_ m(lu, ru, rd, ld):
     global m_lu
     global m_ru
     global m_rd

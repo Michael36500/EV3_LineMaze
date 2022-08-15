@@ -39,7 +39,7 @@ def naskenuj():
             # pt.wait(50)
             m_s.reset_angle(0)
             for a in range(len(out_t)):
-                if a % 20 == 0:
+                if a % len(out_t)/20 == 0:
                     out.append(out_t[a])
             return out
 
