@@ -23,7 +23,7 @@ base_speed = 15
 
 while True:
 
-    refl = cols.reflection()
+    refl = cols.reflection()    
     print(refl)
 
     p = 8

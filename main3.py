@@ -31,25 +31,17 @@ m_s.run_angle(300, -95)
 m_s.reset_angle(0)
 
 
-rd_spd = 1000
-def rd_mid():
-    global rd_spd
-    m_s.run_target(rd_spd, 0)
-    return cols.reflection()
 
-def rd_mid_flw():
-    global rd_spd
-    m_s.run_target(rd_spd, -15)
+def rd_mid():
+    m_s.run_target(500, 0)
     return cols.reflection()
 
 def rd_lft():
-    global rd_spd
-    m_s.run_target(rd_spd, trn)
+    m_s.run_target(500, trn)
     return cols.reflection()
 
 def rd_rght():
-    global rd_spd
-    m_s.run_target(rd_spd, -trn)
+    m_s.run_target(500, -trn)
     return cols.reflection()
 
 def make_Uturn():
@@ -80,64 +72,54 @@ def make_left():
     m_r.run_angle(speed, 100)
 
 def line():
-    global targ
+    global lft
+    global mid
+    global rgh
+
     global p
     global base_speed
+    
+    turn = lft - rgh
 
-    mid = rd_mid_flw()
-    error = mid - targ
-    turn = p * error
+    lm = base_speed + turn * p 
+    rm = base_speed - turn * p 
 
-    rm = base_speed + turn
-    lm = base_speed - turn
-
-    m_r.dc(rm)
     m_l.dc(lm)
+    m_r.dc(rm)
+    # print(lm, rm)
 
 def check():
     global thresh
 
     global lft
     global rgh
-    global mid
     
-    mid = rd_mid()
+    # mid = rd_mid()
 
     print(lft, rgh)
 
-    if bila(lft) == True and bila(mid) == True and bila(rgh) == True:
+    if lft > thresh and rgh > thresh:
         print("U turn")
         make_Uturn()
 
-    if bila(lft) == True and bila(mid) == False and bila(rgh) == False:
+    if lft > thresh and rgh < thresh:
         print("right")
         make_right()
 
-    if bila(lft) == False and bila(mid) == False and bila(rgh) == True:
+    if lft < thresh and rgh > thresh:
         print("left")
         make_left()
 
-def bila(inp):
-    global thresh_up
-    global thresh_dwn
 
-    if inp > thresh_up:
-        return True
-    elif inp < thresh_dwn:
-        return False
-    else:
-        return None
-p = 0.5
+p = 0.2
 base_speed = 15
-targ = 8
-trn = 50
+thresh = 13
+targ = 2
+trn = 20
 
-thresh_up = 20
-thresh_dwn = 10
-
-# lft = rd_lft()
+lft = rd_lft()
 # mid = rd_mid()
-# rgh = rd_rght()
+rgh = rd_rght()
 
 while True:
     lft = rd_lft()
