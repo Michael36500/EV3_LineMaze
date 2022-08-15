@@ -8,8 +8,8 @@ import pybricks.tools as pt
 
 ev3 = EV3Brick()
 
-m_l = Motor(Port.B)
-m_r = Motor(Port.C)
+m_r = Motor(Port.B)
+m_l = Motor(Port.C)
 m_s = Motor(Port.D, positive_direction=Direction.COUNTERCLOCKWISE)
 
 cols = ColorSensor(Port.S4)
@@ -39,45 +39,51 @@ def rd_mid():
 
 def rd_mid_flw():
     global rd_spd
-    m_s.run_target(rd_spd, -15)
+    m_s.run_target(rd_spd, -10)
     return cols.reflection()
 
 def rd_lft():
     global rd_spd
-    m_s.run_target(rd_spd, trn)
+    m_s.run_target(rd_spd, -trn)
     return cols.reflection()
 
 def rd_rght():
     global rd_spd
-    m_s.run_target(rd_spd, -trn)
+    m_s.run_target(rd_spd, trn)
     return cols.reflection()
 
 def make_Uturn():
     speed = 200
-    hwmuch = 700
-    m_l.run_angle(speed, hwmuch, wait=False)
-    m_r.run_angle(speed, -hwmuch)
+    hwmuch = 720
+    m_r.run_angle(speed, hwmuch, wait=False)
+    m_l.run_angle(speed, -hwmuch)
 
-    m_l.run_angle(speed, 100, wait=False)
-    m_r.run_angle(speed, 100)
+    m_r.run_angle(speed, 100, wait=False)
+    m_l.run_angle(speed, 100)
+
 
 def make_right():
     speed = 200
     hwmuch = 350
-    m_l.run_angle(speed, -hwmuch, wait=False)
-    m_r.run_angle(speed, hwmuch)
+    bckwrd = -250
 
-    m_l.run_angle(speed, 100, wait=False)
-    m_r.run_angle(speed, 100)
+    m_r.run_angle(speed, -hwmuch * 0.3, wait=False)
+    m_l.run_angle(speed,  hwmuch * 1.7)
+
+    m_r.run_angle(speed, bckwrd, wait=False)
+    m_l.run_angle(speed, bckwrd)
 
 def make_left():
     speed = 200
     hwmuch = 350
-    m_l.run_angle(speed, hwmuch, wait=False)
-    m_r.run_angle(speed, -hwmuch)
+    bckwrd = -250
 
-    m_l.run_angle(speed, 100, wait=False)
-    m_r.run_angle(speed, 100)
+    m_l.run_angle(speed, -hwmuch * 0.3, wait=False)
+    m_r.run_angle(speed,  hwmuch * 1.7)
+
+    m_r.run_angle(speed, bckwrd, wait=False)
+    m_l.run_angle(speed, bckwrd)
+make_left()
 
 def line():
     global targ
@@ -91,25 +97,28 @@ def line():
     rm = base_speed + turn
     lm = base_speed - turn
 
-    m_r.dc(rm)
-    m_l.dc(lm)
+    m_r.dc(lm)
+    m_l.dc(rm)
 
 def check():
     global thresh
 
-    global lft
-    global rgh
-    global mid
+    # global lft
+    # global rgh
+    # global mid
     
+    lft = rd_lft()
     mid = rd_mid()
+    rgh = rd_rght()
 
-    print(lft, rgh)
+    print(lft, mid, rgh)
 
     if bila(lft) == True and bila(mid) == True and bila(rgh) == True:
         print("U turn")
         make_Uturn()
 
     if bila(lft) == True and bila(mid) == False and bila(rgh) == False:
+    # if lft > thresh_up and rgh < thresh_dwn:
         print("right")
         make_right()
 
@@ -127,25 +136,23 @@ def bila(inp):
         return False
     else:
         return None
-p = 0.5
-base_speed = 15
+p = 0.25
+base_speed = 12
 targ = 8
-trn = 50
+trn = 40
 
-thresh_up = 20
-thresh_dwn = 10
+thresh_up = 17
+thresh_dwn = 12
 
-# lft = rd_lft()
-# mid = rd_mid()
-# rgh = rd_rght()
+lft = rd_lft()
+mid = rd_mid()
+rgh = rd_rght()
 
 while True:
-    lft = rd_lft()
     line()
     check()
 
-    rgh = rd_rght()
-    line()
-    check()
+    # line()
+    # check()
 
     
