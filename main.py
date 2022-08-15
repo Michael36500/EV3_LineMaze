@@ -49,54 +49,24 @@ def line():
     global lft
     global mid
     global rgh
+
     global p
-    if lft == rgh:
-        rm = base_speed
-        lm = base_speed
+    global base_speed
+    
+    turn = lft - rgh
 
-    if lft > rgh:
-        rm = base_speed - (p * mid)
-        lm = base_speed + (p * mid)
-
-    if lft < rgh:
-        rm = base_speed + (p * mid)
-        lm = base_speed - (p * mid)
+    lm = base_speed + turn * p 
+    rm = base_speed - turn * p 
 
     m_l.dc(lm)
     m_r.dc(rm)
     # print(lm, rm)
 
 
-def make_Uturn():
-    speed = 200
-    hwmuch = 700
-    m_l.run_angle(speed, hwmuch, wait=False)
-    m_r.run_angle(speed, -hwmuch)
-
-    m_l.run_angle(speed, 100, wait=False)
-    m_r.run_angle(speed, 100)
-
-def check():
-    global thresh
-
-    global lft
-    global mid
-    global rgh
-
-    print(lft, mid, rgh)
-
-    if lft > thresh and mid > thresh and rgh > thresh:
-        print("U turn")
-        make_Uturn()
-
-        lft = rd_lft()
-        mid = rd_mid()
-        rgh = rd_rght()
-
-
-p = 0.25
-base_speed = 15
-thresh = 18
+p = 0.2
+base_speed = 13
+thresh = 12
+targ = 2
 
 lft = rd_lft()
 mid = rd_mid()
@@ -105,12 +75,7 @@ rgh = rd_rght()
 while True:
     lft = rd_lft()
     line()
-    check()
-    mid = rd_mid()
-    line()
-    check()
     rgh = rd_rght()
     line()
-    check()
 
     
