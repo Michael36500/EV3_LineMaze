@@ -83,7 +83,6 @@ def make_left():
 
     m_r.run_angle(speed, bckwrd, wait=False)
     m_l.run_angle(speed, bckwrd)
-make_left()
 
 def line():
     global targ
@@ -97,8 +96,8 @@ def line():
     rm = base_speed + turn
     lm = base_speed - turn
 
-    m_r.dc(lm)
-    m_l.dc(rm)
+    m_r.dc(lm + 1)
+    m_l.dc(rm + 1)
 
 def check():
     global thresh
@@ -141,7 +140,7 @@ base_speed = 12
 targ = 8
 trn = 40
 
-thresh_up = 17
+thresh_up = 15
 thresh_dwn = 12
 
 lft = rd_lft()
