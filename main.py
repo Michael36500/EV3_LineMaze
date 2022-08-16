@@ -50,6 +50,14 @@ def rd_rgh():
     m_s.run_target(rd_spd, trn)
     return cols.reflection()
 
+def rd_all():
+    global lft
+    global rgh
+    global mid
+
+    lft = rd_lft()
+    mid = rd_mid()
+    rgh = rd_rgh()
 def make_Uturn():
     speed = 200
     hwmuch = 720
@@ -82,6 +90,13 @@ def make_left():
     m_r.run_angle(speed, bckwrd, wait=False)
     m_l.run_angle(speed, bckwrd)
 
+def make_strght():
+    speed = 200
+    hwmuch = 150    #vyladit !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    m_l.run_angle(speed, hwmuch, wait=False)
+    m_r.run_angle(speed, hwmuch)
+
 def line():
     global targ
     global p
@@ -99,53 +114,7 @@ def line():
     m_r.dc(lm)
     m_l.dc(rm)
 
-def is_Uturn():
-    global lft
-    global rgh
-    global mid
-    
-    global lft_fwd
-    global rgh_fwd
-    global mid_fwd
-    
-    if bila(lft)== True and bila(mid) == True and bila(rgh) == True:
-        # read_fwd()
-        # if bila(lft_fwd)== True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
-        return True
-
-def is_left():
-    global lft
-    global rgh
-    global mid
-    
-    global lft_fwd
-    global rgh_fwd
-    global mid_fwd
-
-    if bila(lft) == False and bila(mid) == False and bila(rgh) == True:
-        read_fwd()
-        if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
-            return True
-
-def is_right():
-    global lft
-    global rgh
-    global mid
-    
-    global lft_fwd
-    global rgh_fwd
-    global mid_fwd
-
-    if bila(lft) == True and bila(mid) == False and bila(rgh) == False:
-        read_fwd()
-        if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
-            return True
-
-
-
 def check():
-    global thresh
-
     global lft
     global rgh
     global mid
@@ -158,20 +127,55 @@ def check():
 
     print(lft_fwd, mid_fwd, rgh_fwd)
     print(lft, mid, rgh)
+    print(memory)
     print()
 
-    if is_Uturn():
-        print("U turn")
-        make_Uturn()
+    if bila(lft) == False and bila(mid) == False and bila(rgh) == True:
+        read_fwd()
+        if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+            print("L")
+            # memory.append("L")
+            make_left()
+            rd_all()
+        if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+            print("J")
+            memory.append("L")
+            make_left()
+            rd_all()
 
-    if is_right():
-    # if lft > thresh_up and rgh < thresh_dwn:
-        print("right")
-        make_right()
+    if bila(lft) == True and bila(mid) == False and bila(rgh) == False:
+        read_fwd()
+        if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+            print("R")
+            # memory.append("L")
+            make_right()
+            rd_all()
+        if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+            print("K")
+            memory.append("S")
+            make_strght()
+            rd_all()
 
-    if is_left():
-        print("left")
-        make_left()
+    if bila(lft) == False and bila(mid) == False and bila(rgh) == False:
+        read_fwd()
+        if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+            print("T")
+            memory.append("L")
+            make_left()
+            rd_all()
+        if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+            print("+")
+            memory.append("L")
+            make_left()
+            rd_all()
+
+    if bila(lft)== True and bila(mid) == True and bila(rgh) == True:
+        read_fwd()
+        if bila(lft_fwd)== True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+            print("U")
+            memory.append("U")
+            make_Uturn()
+            rd_all()
 
 
 def read_fwd():
@@ -211,9 +215,12 @@ trn = 40
 thresh_up = 16
 thresh_dwn = 12
 
+memory = []
+
 lft = rd_lft()
 mid = rd_mid()
 rgh = rd_rgh()
+
 
 read_fwd()
 
