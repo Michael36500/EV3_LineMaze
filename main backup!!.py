@@ -100,24 +100,19 @@ def make_strght():
 def line():
     global targ
     global p
-    global base_angle
+    global base_speed
 
     mid = rd_mid_flw()
     error = mid - targ
     turn = p * error
 
-    rm = base_angle + turn
-    lm = base_angle - turn
+    rm = base_speed + turn
+    lm = base_speed - turn
 
     # print(lm, rm)
 
-    speed = 50
-
-    m_r.run_angle(speed, rm, wait = False)
-    m_l.run_angle(speed, lm)
-
-    # m_r.dc(lm)
-    # m_l.dc(rm)
+    m_r.dc(lm)
+    m_l.dc(rm)
 
 def updt_memory():
     global memory
@@ -240,12 +235,12 @@ def bila(inp):
     else:
         return None
 p = 0.2
-base_angle = 10
+base_speed = 10
 targ = 8
 trn = 40
 
 thresh_up = 14
-thresh_dwn = 11
+thresh_dwn = 13
 
 memory = []
 
