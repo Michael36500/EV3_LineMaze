@@ -114,6 +114,22 @@ def line():
     m_r.dc(lm)
     m_l.dc(rm)
 
+def updt_memory():
+    global memory
+    try:
+        if memory[-2] == "U":
+            scnd = memory.pop()
+            memory.pop()
+            frst = memory.pop()
+            if frst == "L" and scnd == "L":
+                memory.append("S")
+            if frst == "S" and scnd == "L":
+                memory.append("R")
+            if frst == "L" and scnd == "S":
+                memory.append("R")
+    except:
+        pass
+
 def check():
     global lft
     global rgh
@@ -136,11 +152,13 @@ def check():
             print("L")
             # memory.append("L")
             make_left()
+            updt_memory()
             rd_all()
         if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
             print("J")
             memory.append("L")
             make_left()
+            updt_memory()
             rd_all()
 
     if bila(lft) == True and bila(mid) == False and bila(rgh) == False:
@@ -149,11 +167,13 @@ def check():
             print("R")
             # memory.append("L")
             make_right()
+            updt_memory()
             rd_all()
         if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
             print("K")
             memory.append("S")
             make_strght()
+            updt_memory()
             rd_all()
 
     if bila(lft) == False and bila(mid) == False and bila(rgh) == False:
@@ -162,12 +182,18 @@ def check():
             print("T")
             memory.append("L")
             make_left()
+            updt_memory()
             rd_all()
         if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
             print("+")
             memory.append("L")
             make_left()
+            updt_memory()
             rd_all()
+        if bila(lft_fwd) == False and bila(mid_fwd) == False and bila(rgh_fwd) == False:
+            print("FINISH")
+            # memory.append("F")
+            return "out"
 
     if bila(lft)== True and bila(mid) == True and bila(rgh) == True:
         read_fwd()
@@ -175,6 +201,7 @@ def check():
             print("U")
             memory.append("U")
             make_Uturn()
+            updt_memory()
             rd_all()
 
 
@@ -227,10 +254,12 @@ read_fwd()
 while True:
     lft = rd_lft()
     line()
-    check()
+    if check() == "out":
+        break
 
     rgh = rd_rgh()
     line()
-    check()
+    if check() == "out":
+        break
 
-    
+# add execute found path
