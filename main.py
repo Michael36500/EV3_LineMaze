@@ -2,7 +2,7 @@
 import pybricks.tools as pt
 from pybricks.ev3devices import ColorSensor, Motor, TouchSensor
 from pybricks.hubs import EV3Brick
-from pybricks.parameters import Direction, Port
+from pybricks.parameters import Direction, Port, Color
 
 ev3 = EV3Brick()
 
@@ -64,8 +64,8 @@ def make_Uturn():
     m_r.run_angle(speed, hwmuch, wait=False)
     m_l.run_angle(speed, -hwmuch)
 
-    m_r.run_angle(speed, 100, wait=False)
-    m_l.run_angle(speed, 100)
+    m_r.run_angle(speed, -150, wait=False)
+    m_l.run_angle(speed, -150)
 
 
 def make_right():
@@ -92,11 +92,11 @@ def make_left():
 
 def make_strght():
     speed = 200
-    hwmuch = 150    #vyladit !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    hwmuch = 75
 
     m_l.run_angle(speed, hwmuch, wait=False)
     m_r.run_angle(speed, hwmuch)
-
+    
 def line():
     global targ
     global p
@@ -141,8 +141,8 @@ def check():
 
     mid = rd_mid()
 
-    print(lft_fwd, mid_fwd, rgh_fwd)
-    print(lft, mid, rgh)
+    print(bila(lft_fwd), bila(mid_fwd), bila(rgh_fwd), lft_fwd, mid_fwd, rgh_fwd)
+    print(bila(lft), bila(mid), bila(rgh), lft, mid, rgh)
     print(memory)
     print()
 
@@ -239,8 +239,8 @@ base_speed = 10
 targ = 8
 trn = 40
 
-thresh_up = 16
-thresh_dwn = 12
+thresh_up = 14
+thresh_dwn = 11
 
 memory = []
 
@@ -253,13 +253,115 @@ read_fwd()
 
 while True:
     lft = rd_lft()
-    line()
-    if check() == "out":
-        break
+    # line()
+    # if check() == "out":
+    #     break
 
     rgh = rd_rgh()
     line()
     if check() == "out":
         break
 
+# waiting to start second pass through maze
+while True:
+    if toch.pressed() == True:
+        pt.wait(100)
+        break
+
+
 # add execute found path
+ev3.light.on(Color.RED)
+lft = rd_lft()
+mid = rd_mid()
+rgh = rd_rgh()
+
+
+read_fwd()
+
+def check_solved():
+    global lft
+    global rgh
+    global mid
+    
+    global lft_fwd
+    global rgh_fwd
+    global mid_fwd
+
+    global indx
+    
+    mid = rd_mid()
+
+    print(bila(lft_fwd), bila(mid_fwd), bila(rgh_fwd), lft_fwd, mid_fwd, rgh_fwd)
+    print(bila(lft), bila(mid), bila(rgh), lft, mid, rgh)
+    print(memory)
+    print()
+
+
+    if bila(lft) == False and bila(mid) == False and bila(rgh) == True:
+        read_fwd()
+        if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+            print("L")
+            make_left()
+            rd_all()
+        if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+            print("J")
+            make_turn()
+            rd_all()
+
+    if bila(lft) == True and bila(mid) == False and bila(rgh) == False:
+        read_fwd()
+        if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+            print("R")
+            make_right()
+            rd_all()
+        if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+            print("K")
+            make_turn()
+            rd_all()
+
+    if bila(lft) == False and bila(mid) == False and bila(rgh) == False:
+        read_fwd()
+        if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+            print("T")
+            make_turn()
+            rd_all()
+        if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+            print("+")
+            make_turn()
+            rd_all()
+        if bila(lft_fwd) == False and bila(mid_fwd) == False and bila(rgh_fwd) == False:
+            print("FINISH")
+            return "out"
+
+def make_turn():
+    global indx
+    global memory
+
+    try:
+        if memory[indx] == "L":
+            print("L")
+            make_left()
+        elif memory[indx] == "S":
+            make_strght()
+            print("S")
+        elif memory[indx] == "R":
+            make_right()
+            print("R")
+        indx += 1
+    except:
+        pass
+
+
+indx = 0
+
+while True:
+    lft = rd_lft()
+    line()
+    if check_solved() == "out":
+        break
+
+    rgh = rd_rgh()
+    line()
+    if check_solved() == "out":
+        break
+
