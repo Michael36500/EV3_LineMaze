@@ -1,0 +1,6 @@
+1. přidat 2 senzoty
+2. udělat basic maze na 100% úspěšnost
+3. přidat možnost trackování pozice (x, y) robota
+4. TRAUMA / Tremaux
+-----------------------------------------------------------------
+random mouse program
