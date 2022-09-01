@@ -12,7 +12,7 @@ m_r = Motor(Port.C)
 m_s = Motor(Port.D, positive_direction=Direction.COUNTERCLOCKWISE)
 
 cols = ColorSensor(Port.S4)
-toch = TouchSensor(Port.S2)
+toch = TouchSensor(Port.S2) 
 
 
 def vynuluj():
