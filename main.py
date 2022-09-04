@@ -30,27 +30,32 @@ def line():
 
     m_r.dc(rm)
     m_l.dc(lm)
-def go_15():
-    speed = 200
-    bckwrd = 170
+# def go_15():
+#     speed = 200
+#     bckwrd = 170
 
-    m_r.run_angle(speed, bckwrd, wait=False)
-    m_l.run_angle(speed, bckwrd)
+#     m_r.run_angle(speed, bckwrd, wait=False)
+#     m_l.run_angle(speed, bckwrd)
 def make_Uturn():
-    speed = 200
-    hwmuch = 460
+    speed = 400
+    hwmuch = 1288
     bckwrd = 100
-
-    m_r.run_angle(speed, -hwmuch, wait=False)
-    m_l.run_angle(speed,  hwmuch)
+    change = 0.2
+    m_l.run_angle(speed,  hwmuch * (1 - change), wait=False)
+    m_r.run_angle(speed, -hwmuch * (1 + change))
 
     m_r.run_angle(speed, -bckwrd, wait=False)
     m_l.run_angle(speed, -bckwrd)
+
+# make_Uturn()
+# exit()
+
 def make_right():
-    speed = 200
-    hwmuch = 220
-    bckwrd = 100
-    change = 0.6
+    global change
+    speed = 300
+    hwmuch = 616
+    bckwrd = 280
+    change += 0.04
 
     m_r.run_angle(speed, -hwmuch * (1 - change), wait=False)
     m_l.run_angle(speed,  hwmuch * (1 + change))
@@ -58,10 +63,11 @@ def make_right():
     m_r.run_angle(speed, -bckwrd, wait=False)
     m_l.run_angle(speed, -bckwrd)
 def make_left():
-    speed = 200
-    hwmuch = 220
-    bckwrd = 100
-    change = 0.6
+    global change
+    speed = 300
+    hwmuch = 616
+    bckwrd = 280
+    change += 0.1
 
     m_l.run_angle(speed, -hwmuch * (1 - change), wait=False)
     m_r.run_angle(speed,  hwmuch * (1 + change))
@@ -70,15 +76,15 @@ def make_left():
     m_l.run_angle(speed, -bckwrd)
 def make_strght():
     # for skipping crossing
-    speed = 200
-    hwmuch = 75
+    speed = 300
+    hwmuch = 210
 
     m_l.run_angle(speed, hwmuch, wait=False)
     m_r.run_angle(speed, hwmuch)
 def updt_memory():
     global memory
     try:
-        if memory[-2] == "U":
+        if memory[-2] == "U" and len(memory) >= 3:
             scnd = memory.pop()
             memory.pop()
             frst = memory.pop()
@@ -95,8 +101,8 @@ def rd_fwd():
     global rgh_fwd
     global mid_fwd
 
-    speed = 100
-    hwmuch = 75
+    speed = 300
+    hwmuch = 200
 
     m_r.run_angle(speed, hwmuch, wait=False)
     m_l.run_angle(speed, hwmuch)
@@ -142,21 +148,21 @@ def check():
     somenum += 1
 
     if somenum % 100 == 0:
-        print(bila(lft_fwd), bila(mid_fwd), bila(rgh_fwd), lft_fwd, mid_fwd, rgh_fwd)
-        print(bila(lft), bila(mid), bila(rgh), lft, mid, rgh)
-        print(memory)
-        print()
+        pebug()
 
     if bila(lft) == False and bila(mid) == False and bila(rgh) == True:
+        pebug()
         rd_fwd()
         somenum = 0
         if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+            pebug()
             print("L")
             # memory.append("L")
             make_left()
             updt_memory()
             rd_all()
         if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+            pebug()
             print("J")
             memory.append("L")
             make_left()
@@ -164,15 +170,18 @@ def check():
             rd_all()
 
     if bila(lft) == True and bila(mid) == False and bila(rgh) == False:
+        pebug()
         rd_fwd()
         somenum = 0
         if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+            pebug()
             print("R")
             # memory.append("L")
             make_right()
             updt_memory()
             rd_all()
         if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+            pebug()
             print("K")
             memory.append("S")
             make_strght()
@@ -180,41 +189,63 @@ def check():
             rd_all()
 
     if bila(lft) == False and bila(mid) == False and bila(rgh) == False:
+        pebug()
         rd_fwd()
         somenum = 0
         if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+            pebug()
             print("T")
             memory.append("L")
             make_left()
             updt_memory()
             rd_all()
         if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+            pebug()
             print("+")
             memory.append("L")
             make_left()
             updt_memory()
             rd_all()
         if bila(lft_fwd) == False and bila(mid_fwd) == False and bila(rgh_fwd) == False:
+            pebug()
             print("FINISH")
             # memory.append("F")
             return "out"
 
     if bila(lft)== True and bila(mid) == True and bila(rgh) == True:
+        pebug()
         rd_fwd()
         if bila(lft_fwd)== True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+            pebug()
             print("U")
             memory.append("U")
             make_Uturn()
             updt_memory()
             rd_all()
 
+def pebug():
+    global lft
+    global rgh
+    global mid
+    
+    global lft_fwd
+    global rgh_fwd
+    global mid_fwd
+
+    global somenum
+
+    print(bila(lft_fwd), bila(mid_fwd), bila(rgh_fwd), lft_fwd, mid_fwd, rgh_fwd)
+    print(bila(lft), bila(mid), bila(rgh), lft, mid, rgh)
+    print(memory)
+    print()
 
 
-p = 1
-base_speed = 30 
-thresh_up = 16
-thresh_dwn = 8
+p = 15
+base_speed = 60
+thresh_up = 13
+thresh_dwn = 10
 targ = 7
+change = 0.7
 
 memory = []
 somenum = 0
