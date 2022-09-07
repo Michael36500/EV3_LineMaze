@@ -38,42 +38,62 @@ def line():
 #     m_l.run_angle(speed, bckwrd)
 def make_Uturn():
     speed = 400
-    hwmuch = 1288
+    hwmuch = 1288 // 3 * 2
     bckwrd = 100
     change = 0.2
+    change = 0
     m_l.run_angle(speed,  hwmuch * (1 - change), wait=False)
     m_r.run_angle(speed, -hwmuch * (1 + change))
+
+    m_l.dc( speed // 10)
+    m_r.dc(-speed // 10)
+
+    while True:
+        if cl1.reflection() > targ + 2:
+            break    
 
     m_r.run_angle(speed, -bckwrd, wait=False)
     m_l.run_angle(speed, -bckwrd)
 
-# make_Uturn()
-# exit()
 
 def make_right():
     global change
     speed = 300
-    hwmuch = 616
+    hwmuch = 590 // 3 * 2
     bckwrd = 280
-    change += 0.04
+    # change -= 0.7
 
     m_r.run_angle(speed, -hwmuch * (1 - change), wait=False)
     m_l.run_angle(speed,  hwmuch * (1 + change))
 
-    m_r.run_angle(speed, -bckwrd, wait=False)
-    m_l.run_angle(speed, -bckwrd)
+    m_r.dc(-speed // 10)
+    m_l.dc( speed // 10)
+    while True:
+        print(cl1.reflection())
+        if cl1.reflection() > targ:
+            break
+
+    # m_r.run_angle(speed, -bckwrd, wait=False)
+    # m_l.run_angle(speed, -bckwrd)
+
+
 def make_left():
     global change
     speed = 300
-    hwmuch = 616
+    hwmuch = 590 // 3 * 2
     bckwrd = 280
-    change += 0.1
-
+    # change -= 0
     m_l.run_angle(speed, -hwmuch * (1 - change), wait=False)
     m_r.run_angle(speed,  hwmuch * (1 + change))
+    
 
-    m_r.run_angle(speed, -bckwrd, wait=False)
-    m_l.run_angle(speed, -bckwrd)
+    m_r.dc( speed // 10)
+    m_l.dc(-speed // 10)
+    while True:
+        if cl1.reflection() < targ:
+            break
+
+
 def make_strght():
     # for skipping crossing
     speed = 300
@@ -249,6 +269,7 @@ change = 0.7
 
 memory = []
 somenum = 0
+
 
 rd_all()
 rd_fwd()
