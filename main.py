@@ -1,9 +1,8 @@
 #!/usr/bin/env pybricks-micropython
-from re import X
 import pybricks.tools as pt
 from pybricks.ev3devices import ColorSensor, Motor, TouchSensor
 from pybricks.hubs import EV3Brick
-from pybricks.parameters import Direction, Port, Color
+from pybricks.parameters import Color, Direction, Port
 
 ev3 = EV3Brick()    
 
@@ -14,15 +13,18 @@ cl1 = ColorSensor(Port.S1)
 cl2 = ColorSensor(Port.S2)
 cl3 = ColorSensor(Port.S3)
 
+navig = ColorSensor(Port.S4)
 
 
 def line():
     global targ
     global p
     global base_speed
+    global navi
 
-    lft = cl1.reflection()
-    error = lft - targ
+    navi = navig.reflection()
+    # print(navi)
+    error = navi - targ
     turn = p * error
 
     rm = base_speed + turn
@@ -40,16 +42,20 @@ def make_Uturn():
     speed = 400
     hwmuch = 1288 // 3 * 2
     bckwrd = 100
-    change = 0.2
-    change = 0
-    m_l.run_angle(speed,  hwmuch * (1 - change), wait=False)
-    m_r.run_angle(speed, -hwmuch * (1 + change))
+    zmena = change - 0.1
+    # zmena = 0
+    m_r.run_angle(speed,  hwmuch * (1 - zmena), wait=False)
+    m_l.run_angle(speed, -hwmuch * (1 + zmena))
+    # m_r.run_angle(speed,  hwmuch, wait=False)
+    # m_l.run_angle(speed, -hwmuch)
 
-    m_l.dc( speed // 10)
-    m_r.dc(-speed // 10)
+    m_r.dc( speed // 15 * (1 - zmena))
+    m_l.dc(-speed // 15 * (1 + zmena))
 
     while True:
-        if cl1.reflection() > targ + 2:
+        nav = navig.reflection()
+        # print(nav)
+        if nav < targ:
             break    
 
     m_r.run_angle(speed, -bckwrd, wait=False)
@@ -61,16 +67,17 @@ def make_right():
     speed = 300
     hwmuch = 590 // 3 * 2
     bckwrd = 280
-    # change -= 0.7
+    zmena = change - 0.3
 
     m_r.run_angle(speed, -hwmuch * (1 - change), wait=False)
     m_l.run_angle(speed,  hwmuch * (1 + change))
 
-    m_r.dc(-speed // 10)
-    m_l.dc( speed // 10)
+    m_r.dc(-speed // 10 * (1 - zmena))
+    m_l.dc( speed // 10 * (1 + zmena))
     while True:
-        print(cl1.reflection())
-        if cl1.reflection() > targ:
+        nav = navig.reflection()
+        print(nav)
+        if nav > targ + 2:
             break
 
     # m_r.run_angle(speed, -bckwrd, wait=False)
@@ -82,7 +89,6 @@ def make_left():
     speed = 300
     hwmuch = 590 // 3 * 2
     bckwrd = 280
-    # change -= 0
     m_l.run_angle(speed, -hwmuch * (1 - change), wait=False)
     m_r.run_angle(speed,  hwmuch * (1 + change))
     
@@ -90,7 +96,9 @@ def make_left():
     m_r.dc( speed // 10)
     m_l.dc(-speed // 10)
     while True:
-        if cl1.reflection() < targ:
+        nav = navig.reflection()
+        # print(nav)
+        if nav < targ + 2:
             break
 
 
@@ -247,6 +255,8 @@ def pebug():
     global lft
     global rgh
     global mid
+
+    global navi
     
     global lft_fwd
     global rgh_fwd
@@ -256,16 +266,18 @@ def pebug():
 
     print(bila(lft_fwd), bila(mid_fwd), bila(rgh_fwd), lft_fwd, mid_fwd, rgh_fwd)
     print(bila(lft), bila(mid), bila(rgh), lft, mid, rgh)
+    print(navi)
     print(memory)
     print()
 
 
-p = 15
-base_speed = 60
-thresh_up = 13
-thresh_dwn = 10
-targ = 7
-change = 0.7
+p = 5
+base_speed = 40
+thresh_up = 19
+thresh_dwn = 6
+targ = 8
+change = 0.6
+
 
 memory = []
 somenum = 0
@@ -273,7 +285,14 @@ somenum = 0
 
 rd_all()
 rd_fwd()
+navi = 7
 
+# for _ in range(250):
+#     rd_all()
+#     line()
+
+# print("found")
+    
 while True:
     rd_all()
     line()
