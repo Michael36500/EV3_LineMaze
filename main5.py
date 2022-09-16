@@ -23,6 +23,7 @@ def line():
     global navi
 
     navi = navig.reflection()
+    # print(navi)
     error = navi - targ
     turn = p * error
 
@@ -31,31 +32,59 @@ def line():
 
     m_r.dc(rm)
     m_l.dc(lm)
+# def go_15():
+#     speed = 200
+#     bckwrd = 170
 
+#     m_r.run_angle(speed, bckwrd, wait=False)
+#     m_l.run_angle(speed, bckwrd)
 def make_Uturn():
     speed = 400
+    # hwmuch = 1288 // 3 * 2
     hwmuch = 1950 // 3 * 2
     bckwrd = 100
     zmena = - 0.07
+    # zmena = 0
     m_r.run_angle(speed,  hwmuch * (1 - zmena), wait=False)
     m_l.run_angle(speed, -hwmuch * (1 + zmena))
+    # m_r.run_angle(speed,  hwmuch, wait=False)
+    # m_l.run_angle(speed, -hwmuch)
 
+    # # m_r.dc( speed // 10)
+    # # m_l.dc(-speed // 10)
 
+    # # while True:
+    # #     nav = cl1.reflection()
+    # #     # print(nav)
+    # #     if nav > targ:
+    # #         break    
 
+    # m_r.run_angle(speed, -bckwrd, wait=False)
+    # m_l.run_angle(speed, -bckwrd)
 
 
 def make_right():
     global change
     speed = 300
+    # hwmuch = 590 // 3 * 2
     bckwrd = 280
-    zmena = change + 0
+    zmena = change + 0.14
 
     hwmuch = 1950 // 3 * 2 // 2
 
     m_r.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
     m_l.run_angle(speed,  hwmuch * (1 + zmena))
 
+    # m_r.run_angle(speed, -hwmuch * (1 - change), wait=False)
+    # m_l.run_angle(speed,  hwmuch * (1 + change))
 
+    # m_r.dc(-speed // 10 * (1 - zmena))
+    # m_l.dc( speed // 10 * (1 + zmena))
+    # while True:
+    #     nav = navig.reflection()
+    #     print(nav)
+    #     if nav > targ + 2:
+    #         break
 
     m_r.run_angle(speed, -bckwrd, wait=False)
     m_l.run_angle(speed, -bckwrd)
@@ -64,18 +93,19 @@ def make_right():
 def make_left():
     global change
     speed = 300
+    hwmuch = 590 // 3 * 2
     bckwrd = 280
-    zmena = change - 0.14
+    m_l.run_angle(speed, -hwmuch * (1 - change), wait=False)
+    m_r.run_angle(speed,  hwmuch * (1 + change))
+    
 
-    hwmuch = 1950 // 3 * 2 // 2
-
-    m_l.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
-    m_r.run_angle(speed,  hwmuch * (1 + zmena))
-
-
-
-    m_l.run_angle(speed, -bckwrd, wait=False)
-    m_r.run_angle(speed, -bckwrd)
+    m_r.dc( speed // 10)
+    m_l.dc(-speed // 10)
+    while True:
+        nav = navig.reflection()
+        # print(nav)
+        if nav < targ + 2:
+            break
 
 
 def make_strght():
