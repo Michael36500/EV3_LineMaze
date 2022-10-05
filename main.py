@@ -33,24 +33,22 @@ def line():
     m_l.dc(lm)
 
 def make_Uturn():
+    global targ
     speed = 400
-    hwmuch = 1950 // 3 * 2
+    hwmuch = 1840 // 3 * 2
     bckwrd = 100
-    zmena = - 0.07
-    m_r.run_angle(speed,  hwmuch * (1 - zmena), wait=False)
-    m_l.run_angle(speed, -hwmuch * (1 + zmena))
-
-
-
+    zmena = 0.06
+    m_r.run_angle(speed * (1 + zmena),  hwmuch, wait=False)
+    m_l.run_angle(speed * (1 - zmena), -hwmuch)
 
 
 def make_right():
     global change
     speed = 300
     bckwrd = 280
-    zmena = change + 0
+    zmena = change + 0.12
 
-    hwmuch = 1950 // 3 * 2 // 2
+    hwmuch = 2000 // 3 
 
     m_r.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
     m_l.run_angle(speed,  hwmuch * (1 + zmena))
@@ -65,9 +63,9 @@ def make_left():
     global change
     speed = 300
     bckwrd = 280
-    zmena = change - 0.14
+    zmena = change
 
-    hwmuch = 1950 // 3 * 2 // 2
+    hwmuch = 1850 // 3
 
     m_l.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
     m_r.run_angle(speed,  hwmuch * (1 + zmena))
@@ -122,9 +120,9 @@ def bila(inp):
     global thresh_up
     global thresh_dwn
 
-    if inp < thresh_up:
+    if inp > thresh_up:
         return True
-    elif inp > thresh_dwn:
+    elif inp < thresh_dwn:
         return False
     else:
         return None
@@ -254,24 +252,32 @@ def calibrate():
     global targ
 
     thresh_up = cl2.reflection() - 5
-    thresh_dwn = (cl1.reflection() + cl3.reflection()) // 2 + 10
+    thresh_dwn = (cl1.reflection() + cl3.reflection()) // 2 + 8
     targ = navig.reflection()
 
     print("thresh_up =", thresh_up)
     print("thresh_dwn =", thresh_dwn)
     print("targ =", targ)
 
-# calibrate()
+calibrate()
 
 p = 5
 base_speed = 40
-thresh_up = 17
-thresh_dwn = 11
-targ = 8
+# thresh_up = 17
+# thresh_dwn = 11
+# targ = 8
 # thresh_up = 19
 # thresh_dwn = 6
 # targ = 8
+# thresh_up = 18
+# thresh_dwn = 14
+# targ = 8
+thresh_up = 40
+thresh_dwn = 67
+targ = 51
+
 change = 0.6
+
 
 
 memory = []
