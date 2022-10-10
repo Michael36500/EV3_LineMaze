@@ -26,8 +26,8 @@ def line():
     error = navi - targ
     turn = p * error
 
-    rm = base_speed + turn
-    lm = base_speed - turn
+    rm = base_speed - turn
+    lm = base_speed + turn
 
     m_r.dc(rm)
     m_l.dc(lm)
@@ -35,6 +35,7 @@ def line():
 def make_Uturn():
     global targ
     speed = 400
+<<<<<<< Updated upstream
     hwmuch = 1840 // 3 * 2
     bckwrd = 100
     zmena = 0.06
@@ -49,32 +50,82 @@ def make_right():
     zmena = change + 0.12
 
     hwmuch = 2000 // 3 
+=======
+    hwmuch = 1000
+    zmena = 0
 
     m_r.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
     m_l.run_angle(speed,  hwmuch * (1 + zmena))
 
+    m_l.dc( 20)
+    m_r.dc(-20)
+
+    while True:
+        nav = navig.reflection()
+        print(nav)
+        if nav < targ:
+            break
 
 
-    m_r.run_angle(speed, -bckwrd, wait=False)
-    m_l.run_angle(speed, -bckwrd)
 
+>>>>>>> Stashed changes
+
+
+
+def make_right():
+    speed = 400
+    hwmuch = 500
+    zmena = change - 0.06
+
+    m_r.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
+    m_l.run_angle(speed,  hwmuch * (1 + zmena))
+
+    m_l.dc( 20)
+    m_r.dc(-20)
+
+    while True:
+        nav = navig.reflection()
+        print(nav)
+        if nav < targ:
+            break
 
 def make_left():
+<<<<<<< Updated upstream
     global change
     speed = 300
     bckwrd = 280
     zmena = change
 
     hwmuch = 1850 // 3
+=======
+    speed = 200
+    hwmuch = 500
+    zmena = change - 0.01
+>>>>>>> Stashed changes
 
     m_l.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
     m_r.run_angle(speed,  hwmuch * (1 + zmena))
 
+    m_l.dc(-20)
+    m_r.dc( 20)
+
+    while True:
+        nav = navig.reflection()
+        print(nav)
+        if nav > targ:
+            break
 
 
-    m_l.run_angle(speed, -bckwrd, wait=False)
-    m_r.run_angle(speed, -bckwrd)
-
+# def make_left():
+#     global change
+#     speed = 300
+#     bckwrd = 280
+#     zmena = change - 0.14
+#     hwmuch = 1950 // 3 * 2 // 2
+#     m_l.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
+#     m_r.run_angle(speed,  hwmuch * (1 + zmena))
+#     m_l.run_angle(speed, -bckwrd, wait=False)
+#     m_r.run_angle(speed, -bckwrd)
 
 def make_strght():
     # for skipping crossing
@@ -116,7 +167,7 @@ def rd_fwd():
     m_r.run_angle(speed, -hwmuch, wait=False)
     m_l.run_angle(speed, -hwmuch)
 def bila(inp):
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nastavené na bílou čáru, černé
+    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nastavene na bilou caru, cerne
     global thresh_up
     global thresh_dwn
 
@@ -246,7 +297,7 @@ def pebug():
 
     
 def calibrate():
-    #!!!!!!!!!!!přesně položeno
+    #!!!!!!!!!!!presne polozeno
     global thresh_up
     global thresh_dwn
     global targ
@@ -255,7 +306,7 @@ def calibrate():
     thresh_dwn = (cl1.reflection() + cl3.reflection()) // 2 + 8
     targ = navig.reflection()
 
-    print("thresh_up =", thresh_up)
+    print("thresh_up =", thresh_dwn)
     print("thresh_dwn =", thresh_dwn)
     print("targ =", targ)
 
@@ -263,6 +314,14 @@ calibrate()
 
 p = 5
 base_speed = 40
+<<<<<<< Updated upstream
+=======
+
+thresh_up = 30
+thresh_dwn = 13
+targ = 15
+
+>>>>>>> Stashed changes
 # thresh_up = 17
 # thresh_dwn = 11
 # targ = 8
