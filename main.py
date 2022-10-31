@@ -10,7 +10,7 @@ m_l = Motor(Port.C, positive_direction=Direction.COUNTERCLOCKWISE)
 m_r = Motor(Port.D, positive_direction=Direction.COUNTERCLOCKWISE)
 
 cl1 = ColorSensor(Port.S1)
-cl2 = ColorSensor(Port.S2) 
+cl2 = ColorSensor(Port.S2)
 cl3 = ColorSensor(Port.S3)
 
 navig = ColorSensor(Port.S4)
@@ -26,136 +26,55 @@ def line():
     error = navi - targ
     turn = p * error
 
-    rm = base_speed - turn
-    lm = base_speed + turn
+    rm = base_speed + turn
+    lm = base_speed - turn
 
     m_r.dc(rm)
     m_l.dc(lm)
 
-def bckwrd():
-    global targ
-    global p
-    global base_speed
-    global navi
-    bs_spd = base_speed // 2
-    for _ in range(3000):
-        navi = navig.reflection()
-        error = navi - targ
-        turn = p * error
-
-        rm = bs_spd - turn
-        lm = bs_spd + turn
-
-        m_r.dc(-rm)
-        m_l.dc(-lm)
-
-
 def make_Uturn():
     global targ
     speed = 400
-    hwmuch = 1000
-    zmena = 0
-
-    m_r.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
-    m_l.run_angle(speed,  hwmuch * (1 + zmena))
-
-    m_l.dc( 20)
-    m_r.dc(-20)
-
-    while True:
-        nav = navig.reflection()
-        rcl1 = cl1.reflection()
-        rcl2 = cl2.reflection()
-        rcl3 = cl3.reflection()
-
-        print(nav)
-        if rcl1 >= thresh_up and rcl2 <= thresh_dwn and rcl3 >= thresh_up and nav >= nav - 5 and nav <= nav + 5:
-            break
-
-    bckwrd()
+    hwmuch = 1840 // 3 * 2
+    bckwrd = 100
+    zmena = 0.06
+    m_r.run_angle(speed * (1 + zmena),  hwmuch, wait=False)
+    m_l.run_angle(speed * (1 - zmena), -hwmuch)
 
 
 def make_right():
-    global targ
-    global thresh_up
-    global thresh_dwn
-    speed = 400
-    hwmuch = 400
-    zmena = change - 0.06
+    global change
+    speed = 300
+    bckwrd = 280
+    zmena = change + 0.12
+
+    hwmuch = 2000 // 3 
 
     m_r.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
     m_l.run_angle(speed,  hwmuch * (1 + zmena))
 
-    m_l.dc( 30 * zmena)
-    m_r.dc(-30 * zmena)
 
-    while True:
-        nav = navig.reflection()
-        rcl1 = cl1.reflection()
-        rcl2 = cl2.reflection()
-        rcl3 = cl3.reflection()
 
-        print(nav)
-        if rcl1 >= thresh_up and rcl2 <= thresh_dwn and rcl3 >= thresh_up and nav >= nav - 5 and nav <= nav + 5:
-            break
-        
-    bckwrd()
+    m_r.run_angle(speed, -bckwrd, wait=False)
+    m_l.run_angle(speed, -bckwrd)
+
 
 def make_left():
-    global targ
-    global thresh_up
-    global thresh_dwn
-    speed = 400
-    hwmuch = 400
-    zmena = change - 0.01
+    global change
+    speed = 300
+    bckwrd = 280
+    zmena = change
+
+    hwmuch = 1850 // 3
 
     m_l.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
     m_r.run_angle(speed,  hwmuch * (1 + zmena))
 
-    m_l.dc(-30 * zmena)
-    m_r.dc( 30 * zmena)
-
-    while True:
-        nav = navig.reflection()
-        rcl1 = cl1.reflection()
-        rcl2 = cl2.reflection()
-        rcl3 = cl3.reflection()
-
-        print(nav)
-        if rcl1 >= thresh_up and rcl2 <= thresh_dwn and rcl3 >= thresh_up and nav >= nav - 5 and nav <= nav + 5:
-            break
-
-    bckwrd()
 
 
-# def make_left():
-#     global targ
-#     speed = 200
-#     hwmuch = 500
-#     zmena = change - 0.01
+    m_l.run_angle(speed, -bckwrd, wait=False)
+    m_r.run_angle(speed, -bckwrd)
 
-#     m_l.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
-#     m_r.run_angle(speed,  hwmuch * (1 + zmena))
-
-#     m_l.dc(-20)
-
-#     while True:
-#         nav = navig.reflection()
-#         print(nav)
-#         if nav > targ:
-#             break
-
-
-# def make_left():
-#     global change
-#     speed = 300
-#     bckwrd = 280
-#     zmena = change - 0.14
-#     hwmuch = 1950 // 3 * 2 // 2
-#     m_l.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
-#     m_r.run_angle(speed,  hwmuch * (1 + zmena))
-#     m_l.run_angle(speed, -bckwrd, wait=False)
-#     m_r.run_angle(speed, -bckwrd)
 
 def make_strght():
     # for skipping crossing
@@ -197,7 +116,7 @@ def rd_fwd():
     m_r.run_angle(speed, -hwmuch, wait=False)
     m_l.run_angle(speed, -hwmuch)
 def bila(inp):
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nastavene na bilou caru, cerne
+    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! nastavené na bílou čáru, černé
     global thresh_up
     global thresh_dwn
 
@@ -327,7 +246,7 @@ def pebug():
 
     
 def calibrate():
-    #!!!!!!!!!!!presne polozeno
+    #!!!!!!!!!!!přesně položeno
     global thresh_up
     global thresh_dwn
     global targ
@@ -336,18 +255,14 @@ def calibrate():
     thresh_dwn = (cl1.reflection() + cl3.reflection()) // 2 + 8
     targ = navig.reflection()
 
-    print("thresh_up =", thresh_dwn)
+    print("thresh_up =", thresh_up)
     print("thresh_dwn =", thresh_dwn)
     print("targ =", targ)
 
-# calibrate()
+calibrate()
 
 p = 5
 base_speed = 40
-
-thresh_up = 30
-thresh_dwn = 14
-targ = 20
 
 # thresh_up = 17
 # thresh_dwn = 11
@@ -358,20 +273,16 @@ targ = 20
 # thresh_up = 18
 # thresh_dwn = 14
 # targ = 8
-# thresh_up = 40
-# thresh_dwn = 67
-# targ = 51
-thresh_up = 30
-thresh_dwn = 10
-targ = 15
+thresh_up = 40
+thresh_dwn = 67
+targ = 51
 
 change = 0.6
 
 
-
 memory = []
 somenum = 0
-bckwrd()
+
 
 rd_all()
 rd_fwd()
