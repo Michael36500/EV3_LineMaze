@@ -33,80 +33,48 @@ def line():
     m_l.dc(lm)
 
 def make_Uturn():
-    speed = 300
-    # posun = 160
-
-    # m_l.run_angle(speed, posun, wait=False)
-    # m_r.run_angle(speed, posun)
-
-    m_l.run_angle(speed,  800, wait=False)
-    m_r.run_angle(speed, -800)
-
-    m_l.dc(30)
-    m_r.dc(-30)
-
-    mini = 100
-    while True:
-        x = cl2.reflection()
-        print(mini, x)
-        if x < mini:
-            mini = x
-        if x > mini + 2:
-            break
-        
-
+    global targ
+    speed = 400
+    hwmuch = 1840 // 3 * 2
+    bckwrd = 100
+    zmena = 0.06
+    m_r.run_angle(speed * (1 + zmena),  hwmuch, wait=False)
+    m_l.run_angle(speed * (1 - zmena), -hwmuch)
 
 
 def make_right():
-    # global change
+    global change
     speed = 300
-    posun = 175
-    posun = 190
+    bckwrd = 280
+    zmena = change + 0.12
 
-    m_l.run_angle(speed, posun, wait=False)
-    m_r.run_angle(speed, posun)
+    hwmuch = 2000 // 3 
 
-    m_l.run_angle(speed,  400, wait=False)
-    m_r.run_angle(speed, -400)
+    m_r.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
+    m_l.run_angle(speed,  hwmuch * (1 + zmena))
 
-    m_l.dc(30)
-    m_r.dc(-30)
 
-    mini = 100
-    while True:
-        x = cl2.reflection()
-        print(mini, x)  
-        if x < mini:
-            mini = x
-        if x > mini + 2:
-            break
-        
- 
+
+    m_r.run_angle(speed, -bckwrd, wait=False)
+    m_l.run_angle(speed, -bckwrd)
 
 
 def make_left():
-    # global change
+    global change
     speed = 300
-    posun = 160
+    bckwrd = 280
+    zmena = change
 
-    m_l.run_angle(speed, posun, wait=False)
-    m_r.run_angle(speed, posun)
+    hwmuch = 1850 // 3
 
-    m_l.run_angle(speed, -400, wait=False)
-    m_r.run_angle(speed,  400)
+    m_l.run_angle(speed, -hwmuch * (1 - zmena), wait=False)
+    m_r.run_angle(speed,  hwmuch * (1 + zmena))
 
-    m_l.dc(-30)
-    m_r.dc( 30)
 
-    mini = 100
-    while True:
-        x = cl2.reflection()
-        print(mini, x)
-        if x < mini:
-            mini = x
-        if x > mini + 2:
-            break
-        
+
+    m_l.run_angle(speed, -bckwrd, wait=False)
+    m_r.run_angle(speed, -bckwrd)
+
 
 def make_strght():
     # for skipping crossing
@@ -115,7 +83,6 @@ def make_strght():
 
     m_l.run_angle(speed, hwmuch, wait=False)
     m_r.run_angle(speed, hwmuch)
-
 def updt_memory():
     global memory
     try:
@@ -131,8 +98,6 @@ def updt_memory():
                 memory.append("R")
     except:
         pass
-
-
 def rd_fwd():
     global lft_fwd
     global rgh_fwd
@@ -296,7 +261,7 @@ def pebug():
 
 # calibrate()
 
-p = 8
+p = 5
 base_speed = 30
 
 # thresh_up = 17
@@ -312,8 +277,8 @@ base_speed = 30
 # thresh_dwn = 67
 # targ = 51
 
-thresh_up = 32
-thresh_dwn = 11
+thresh_up = 30
+thresh_dwn = 13
 targ = 16
 
 change = 0.6
