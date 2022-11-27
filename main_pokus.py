@@ -49,52 +49,37 @@ def stop():
             break
 
 def make_Uturn():
-    global thresh_dwn
     speed = 300
-
-    m_l.run_angle(speed,  900, wait=False)
-    m_r.run_angle(speed, -900)
-
-    m_l.dc(30)
-    m_r.dc(-30)
-
-    stop()
-
-
-
+    hwmuch = 600 * 2
+    m_l.run_angle(speed,  hwmuch, wait=False)
+    m_r.run_angle(speed, -hwmuch)
+    c1 = cl1.reflection()
+    c2 = cl2.reflection()
+    c3 = cl3.reflection()
+    navi = navig.reflection()
+    print(c1, c2, c3, navi)
 
 def make_right():
-    global thresh_dwn
     speed = 300
-    posun = 180
-
+    posun = 190
     m_l.run_angle(speed, posun, wait=False)
     m_r.run_angle(speed, posun)
 
-    m_l.run_angle(speed,  400, wait=False)
-    m_r.run_angle(speed, -400)
-
-    m_l.dc(30)
-    m_r.dc(-30)
-        
-    stop()
-
+    speed = 300
+    hwmuch = 610
+    m_l.run_angle(speed,  hwmuch, wait=False)
+    m_r.run_angle(speed, -hwmuch)
 
 def make_left():
-    global thresh_dwn
     speed = 300
-    posun = 150
-
+    posun = 170
     m_l.run_angle(speed, posun, wait=False)
     m_r.run_angle(speed, posun)
 
-    m_l.run_angle(speed, -400, wait=False)
-    m_r.run_angle(speed,  400)
-
-    m_l.dc(-30)
-    m_r.dc(30)
-
-    stop()
+    speed = 300
+    hwmuch = -610
+    m_l.run_angle(speed,  hwmuch, wait=False)
+    m_r.run_angle(speed, -hwmuch)
         
 
 def make_strght():
@@ -290,7 +275,7 @@ def read_sensors():
 # calibrate()
 
 p = 8
-base_speed = 45
+base_speed = 40
 
 # thresh_up = 17
 # thresh_dwn = 11
@@ -308,8 +293,8 @@ base_speed = 45
 # thresh_dwn = 11
 # targ = 16
 thresh_up = 20
-thresh_dwn = 13
-targ = 15
+thresh_dwn = 14
+targ = 16
 
 # change = 0.6
 
