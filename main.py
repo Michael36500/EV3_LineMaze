@@ -50,9 +50,10 @@ def stop():
 
 def make_Uturn():
     speed = 300
-    hwmuch = 600 * 2
+    hwmuch = 605 * 2
     m_l.run_angle(speed,  hwmuch, wait=False)
     m_r.run_angle(speed, -hwmuch)
+
     c1 = cl1.reflection()
     c2 = cl2.reflection()
     c3 = cl3.reflection()
@@ -274,7 +275,7 @@ def read_sensors():
     print(navig.reflection())
 # calibrate()
 
-p = 2
+p = 3
 base_speed = 40
 
 # thresh_up = 17
