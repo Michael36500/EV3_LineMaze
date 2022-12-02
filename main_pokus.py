@@ -292,7 +292,7 @@ base_speed = 40
 # thresh_up = 32
 # thresh_dwn = 11
 # targ = 16
-thresh_up = 29
+thresh_up = 25
 thresh_dwn = 14
 targ = 15
 
