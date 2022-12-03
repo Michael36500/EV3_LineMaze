@@ -49,8 +49,9 @@ def stop():
             break
 
 def make_Uturn():
+    global turn
     speed = 300
-    hwmuch = 605 * 2
+    hwmuch = turn * 2
     m_l.run_angle(speed,  hwmuch, wait=False)
     m_r.run_angle(speed, -hwmuch)
 
@@ -61,24 +62,26 @@ def make_Uturn():
     print(c1, c2, c3, navi)
 
 def make_right():
+    global turn
     speed = 300
     posun = 190
     m_l.run_angle(speed, posun, wait=False)
     m_r.run_angle(speed, posun)
 
     speed = 300
-    hwmuch = 610
+    hwmuch = turn
     m_l.run_angle(speed,  hwmuch, wait=False)
     m_r.run_angle(speed, -hwmuch)
 
 def make_left():
+    global turn
     speed = 300
     posun = 170
     m_l.run_angle(speed, posun, wait=False)
     m_r.run_angle(speed, posun)
 
     speed = 300
-    hwmuch = -610
+    hwmuch = -turn
     m_l.run_angle(speed,  hwmuch, wait=False)
     m_r.run_angle(speed, -hwmuch)
         
@@ -145,6 +148,25 @@ def rd_all():
     lft = cl1.reflection()
     mid = cl2.reflection()
     rgh = cl3.reflection()
+def pebug():
+    global lft
+    global rgh
+    global mid
+
+    global navi
+    
+    global lft_fwd
+    global rgh_fwd
+    global mid_fwd
+
+    global somenum
+
+    print(bila(lft_fwd), bila(mid_fwd), bila(rgh_fwd), lft_fwd, mid_fwd, rgh_fwd)
+    print(bila(lft), bila(mid), bila(rgh), lft, mid, rgh)
+    print(navi)
+    print(memory)
+    print()
+
 def check():
     global lft
     global rgh
@@ -155,6 +177,7 @@ def check():
     global mid_fwd
 
     global somenum
+    rd_all()
 
     mid = cl2.reflection()
 
@@ -174,15 +197,19 @@ def check():
             make_left()
             updt_memory()
             rd_all()
-        if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+        elif bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
             pebug()
             print("J")
             memory.append("L")
             make_left()
             updt_memory()
             rd_all()
+        else:
+            print("FUCK!!!")
 
-    if bila(lft) == True and bila(mid) == False and bila(rgh) == False:
+          
+
+    elif bila(lft) == True and bila(mid) == False and bila(rgh) == False:
         pebug()
         rd_fwd()
         somenum = 0
@@ -193,15 +220,17 @@ def check():
             make_right()
             updt_memory()
             rd_all()
-        if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+        elif bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
             pebug()
             print("K")
             memory.append("S")
             make_strght()
             updt_memory()
             rd_all()
+        else:
+            print("FUCK!!!")
 
-    if bila(lft) == False and bila(mid) == False and bila(rgh) == False:
+    elif bila(lft) == False and bila(mid) == False and bila(rgh) == False:
         pebug()
         rd_fwd()
         somenum = 0
@@ -212,48 +241,46 @@ def check():
             make_left()
             updt_memory()
             rd_all()
-        if bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
+        elif bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
             pebug()
             print("+")
             memory.append("L")
             make_left()
             updt_memory()
             rd_all()
-        if bila(lft_fwd) == False and bila(mid_fwd) == False and bila(rgh_fwd) == False:
+        elif bila(lft_fwd) == False and bila(mid_fwd) == False and bila(rgh_fwd) == False:
             pebug()
             print("FINISH")
             # memory.append("F")
             return "out"
 
-    if bila(lft)== True and bila(mid) == True and bila(rgh) == True:
+    elif bila(lft) == True and bila(mid) == True and bila(rgh) == True:
         pebug()
         rd_fwd()
-        if bila(lft_fwd)== True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+        if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
             pebug()
             print("U")
             memory.append("U")
             make_Uturn()
             updt_memory()
             rd_all()
+        # elif bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) != True:
+        #     print("fuck, going right")
+        #     speed = 300
+        #     hwmuch = -100
+        #     m_l.run_angle(speed,  hwmuch, wait=False)
+        #     m_r.run_angle(speed, -hwmuch)
 
-def pebug():
-    global lft
-    global rgh
-    global mid
+        # elif bila(lft_fwd) != True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
+        #     print("fuck, going left")
+        #     speed = 300
+        #     hwmuch = 150
+        #     m_l.run_angle(speed,  hwmuch, wait=False)
+        #     m_r.run_angle(speed, -hwmuch)
+        else:
+            print("FUCK!!!")
 
-    global navi
-    
-    global lft_fwd
-    global rgh_fwd
-    global mid_fwd
 
-    global somenum
-
-    print(bila(lft_fwd), bila(mid_fwd), bila(rgh_fwd), lft_fwd, mid_fwd, rgh_fwd)
-    print(bila(lft), bila(mid), bila(rgh), lft, mid, rgh)
-    print(navi)
-    print(memory)
-    print()
 
 # BROKEN    
 # def calibrate():
@@ -279,25 +306,14 @@ def read_sensors():
 p = 3
 base_speed = 40
 
-# thresh_up = 17
-# thresh_dwn = 11
-# targ = 8
-# thresh_up = 19
-# thresh_dwn = 6
-# targ = 8
-# thresh_up = 18
+# thresh_up = 25
 # thresh_dwn = 14
-# targ = 8
-# thresh_up = 40
-# thresh_dwn = 67
-# targ = 51
-# thresh_up = 32
-# thresh_dwn = 11
-# targ = 16
-thresh_up = 25
-thresh_dwn = 14
-targ = 15
+# targ = 15
+thresh_up = 26
+thresh_dwn =  16
+targ = 12
 
+turn = 600
 # change = 0.6
 
 
