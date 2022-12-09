@@ -1,5 +1,9 @@
+memory = "SLULUSLLUSLULLUSULLL"
 
-strung = "SLULUSLLUSLULLUSULUUUUUUUUSLLUU"
+strung = ""
+
+for x in memory:
+    strung += x
 
 print(strung)
 
@@ -12,6 +16,5 @@ while strung_start != strung:
     strung = strung.replace("SUL", "R")
     strung = strung.replace("RUL", "U")
     strung = strung.replace("SUS", "U")
-    strung = strung.replace("UU", "")
 
 print(strung)
