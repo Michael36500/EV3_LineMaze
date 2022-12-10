@@ -4,6 +4,7 @@ from pybricks.ev3devices import ColorSensor, Motor, TouchSensor  # type: ignore
 from pybricks.hubs import EV3Brick
 from pybricks.parameters import Color, Direction, Port
 from pybricks.robotics import DriveBase
+import random
 
 ev3 = EV3Brick()    
 
@@ -92,8 +93,26 @@ def pebug():
     print(bila(lft_fwd), bila(mid_fwd), bila(rgh_fwd), lft_fwd, mid_fwd, rgh_fwd)
     print(bila(lft), bila(mid), bila(rgh), lft, mid, rgh)
     print(navi)
-    print(pozice, "pozice", wturn, "wturn")
     print()
+
+def make_decision(kriz):
+    moznosti = {"U": ["U"], "L":["L"], "R":["R"], "J":["S", "L"], "K":["S","R"], "T":["R","L"], "+":["R","L","S"]}
+    vyber = moznosti[kriz]
+
+
+
+    if len(vyber) == 1: rand = vyber[0]
+    else: rand = vyber[random.randint(0, len(vyber) - 1)]
+
+    print(vyber, kriz)
+    if rand == "R":
+        make_right()
+    if rand == "L":
+        make_left()
+    if rand == "S":
+        make_strght()
+    if rand == "U":
+        make_Uturn()
 
 
 def check():
@@ -121,13 +140,13 @@ def check():
         somenum = 0
         if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
             print("L")
-            updt_kola()
-            make_left()
+            pebug()
+            make_decision("L")
             rd_all()
         elif bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
             print("J")
-            updt_kola()
-            make_left()
+            pebug()
+            make_decision("J")
             rd_all()
         else:
             print("FUCK FFT!!!")
@@ -137,13 +156,13 @@ def check():
         somenum = 0
         if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
             print("R")
-            updt_kola()
-            make_right()
+            pebug()
+            make_decision("R")
             rd_all()
         elif bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
             print("K")
-            updt_kola()
-            make_strght()
+            pebug()
+            make_decision("K")
             rd_all()
         else:
             print("FUCK TFF!!!")
@@ -153,13 +172,13 @@ def check():
         somenum = 0
         if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
             print("T")
-            updt_kola()
-            make_left()
+            pebug()
+            make_decision("T")
             rd_all()
         elif bila(lft_fwd) == True and bila(mid_fwd) == False and bila(rgh_fwd) == True:
             print("+")
-            updt_kola()
-            make_left()
+            pebug()
+            make_decision("+")
             rd_all()
         elif bila(lft_fwd) == False and bila(mid_fwd) == False and bila(rgh_fwd) == False:
             print("FINISH")
@@ -169,43 +188,11 @@ def check():
         rd_fwd()
         if bila(lft_fwd) == True and bila(mid_fwd) == True and bila(rgh_fwd) == True:
             print("U")
-            updt_kola()
-            make_Uturn()
+            pebug()
+            make_decision("U")
             rd_all()
         else:
             print("FUCK TTT!!!")
-            make_strght()
-
-def updt_kola():
-    global pozice, wturn
-
-    posun = round(robot.distance() / 150, 0)
-    otoceni = (round(robot.angle() / 90, 0) + wturn) % 4
-    wturn = otoceni
-
-    if otoceni == 0:
-        pozice[1] -= posun  # type: ignore
-    elif otoceni == 1:
-        pozice[0] += posun  # type: ignore
-    elif otoceni == 2:
-        pozice[1] += posun  # type: ignore
-    elif otoceni == 3:
-        pozice[0] -= posun  # type: ignore
-    else:
-        print("MOTHERFUCKER!!!!")
-
-
-    print(posun, "posun")
-    print(otoceni, "otoceni")
-
-    robot.reset()
-
-xpole, ypole = 7, 4
-memory = [[] * xpole] * ypole
-
-
-pozice = [6, 5]
-wturn = 3
 
 cis = 0
 najeto_na_kolech = []
@@ -224,9 +211,15 @@ navi = navig.reflection()
 # precise position
 ev3.light.off()
 while navi != targ:
+    if navi > targ:
+        ev3.light.on(Color.RED)
+    if navi < targ:
+        ev3.light.on(Color.ORANGE)
     navi = navig.reflection()
 ev3.light.on(Color.GREEN)
+robot.reset()
 pt.wait(500)
+
 
 
 
