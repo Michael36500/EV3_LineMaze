@@ -36,7 +36,7 @@ def line():
 def make_Uturn():
     # for x in range (3):
     robot.turn(182)
-    # robot.straight(20)
+    # robot.straight(20)    
 
 def make_right():
     ## vylaď
