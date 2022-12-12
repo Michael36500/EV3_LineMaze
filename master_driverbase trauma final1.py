@@ -49,8 +49,7 @@ def make_left():
 def make_strght():
     print("strght")
     # for skipping crossing
-    # robot.straight(30)
-    pass
+    robot.straight(30)
 def rd_fwd():
     global lft_fwd
     global rgh_fwd
@@ -96,20 +95,24 @@ def make_decision(kriz):
     global debug
 
     if kriz == "▫":
+        updt_kola()
         print("našel jsem uturn")
         policsto = planek[int(pozice[0])][int(pozice[1])]
         if policsto.je_prazdny():
             policsto.nastav_podle_krizovatky(kriz)
+        policsto.prijezd(wturn)
         
         make_Uturn()
         updt_kola()
         policsto.odjezd(wturn)
         # wturn = (wturn + 2) % 4 # opačný směr
+
     elif kriz == "■":
         print("finish")
         exit()
     else:
         # když jsem tam nebyl, tak si vložit políčko do planek
+        updt_kola() 
         policsto = planek[int(pozice[0])][int(pozice[1])]
         if policsto.je_prazdny():
             policsto.nastav_podle_krizovatky(kriz)
@@ -119,14 +122,26 @@ def make_decision(kriz):
 
         # vyhodnotím směr odjezdu
             # zjistím kam
+        # strang = ""
+        # for x in planek:
+        #     for y in x:
+        #         strang += y.print_all()
+        #         strang += " "
+        #     strang += "\n"
+        # print(strang)
         # for x in planek:
         #     for y in x:
         #         print(y.print_all(), end="")
         #     print()
-        #     # updt wturn
-        # print()
-        updt_kola() 
+            # updt wturn
+        print()
+        
         x = policsto.get_smer()
+        print(x)
+        # x = int(input())
+        # # print(y)
+        # if y != "d":
+        #     x = y
 
         rozdil = ((x - wturn) + 4) % 4
         print(rozdil, "rozdil")
@@ -208,24 +223,24 @@ def updt_kola():
 
     posun = round(robot.distance() / 150, 0)
     otoceni = (round(robot.angle() / 90, 0) + wturn) % 4
+    robot.reset()
     wturn = otoceni
 
     if otoceni == 0:
-        pozice[1] -= posun  # type: ignore
-    elif otoceni == 1:
-        pozice[0] += posun  # type: ignore
-    elif otoceni == 2:
-        pozice[1] += posun  # type: ignore
-    elif otoceni == 3:
         pozice[0] -= posun  # type: ignore
+    elif otoceni == 1:
+        pozice[1] += posun  # type: ignore
+    elif otoceni == 2:
+        pozice[0] += posun  # type: ignore
+    elif otoceni == 3:
+        pozice[1] -= posun  # type: ignore
     else:
         print("MOTHERFUCKER!!!!")
 
-
     print(posun, "posun")
     print(otoceni, "otoceni")
+    print(wturn, "wturn")
 
-    robot.reset()
 class policko():
     # None - nevíme, -1 - cesta není, 0 cesta je, neprošli, 1 - c je, jednou p, 2 - cesta je, prošli 2 krát
     def __init__(self):
@@ -278,12 +293,15 @@ class policko():
         return strung
 
     def get_smer(self):
+        print("\n")
         lst = [self.nahoru, self.doprava, self.dolu, self.doleva]
-        # print(lst)
+        print(lst)
         for x in range(len(lst)):
             if lst[x] == -1:
                 lst[x] = 3
         kam = lst.index(min(lst)) # type: ignore
+        print(kam)
+        print("\n")
         return kam
         
         
@@ -308,7 +326,7 @@ class policko():
 
 
 
-pozice = [16,16]
+pozice = [7,7]
 wturn = 0
 
 cis = 0
@@ -339,19 +357,20 @@ moznosti_krizovatky = {
     "▫" : [ 0, 0, 0, 0]
 }
 
+print("making planek")
 planek = []
-for _ in range(32):
+for _ in range(15):
     temp = []
-    for _ in range(32):
+    for _ in range(15):
         temp.append(policko())
     planek.append(temp)
 
-# # precise position
-# ev3.light.off()
-# while navi != targ:
-#     navi = navig.reflection()
-# ev3.light.on(Color.GREEN)
-# pt.wait(500)
+# precise position
+ev3.light.off()
+while navi != targ:
+    navi = navig.reflection()
+ev3.light.on(Color.GREEN)
+pt.wait(500)
 
 
 
