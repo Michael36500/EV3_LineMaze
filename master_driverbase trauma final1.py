@@ -50,6 +50,7 @@ def make_strght():
     print("strght")
     # for skipping crossing
     robot.straight(30)
+
 def rd_fwd():
     global lft_fwd
     global rgh_fwd
@@ -61,7 +62,7 @@ def rd_fwd():
     lft_fwd = cl1.reflection()
     mid_fwd = cl2.reflection()
     rgh_fwd = cl3.reflection()
-    # robot.straight(-30)
+    
 def bila(inp):
     global thresh_up
     global thresh_dwn
