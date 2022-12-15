@@ -4,14 +4,13 @@ from pybricks.ev3devices import ColorSensor, Motor, TouchSensor  # type: ignore
 from pybricks.hubs import EV3Brick
 from pybricks.parameters import Color, Direction, Port
 from pybricks.robotics import DriveBase
-from random import randint
+
 # kostka
 ev3 = EV3Brick()    
 
 # motory
 levy_motor = Motor(Port.C, positive_direction=Direction.COUNTERCLOCKWISE, gears=[12,20])
 pravy_motor = Motor(Port.D, positive_direction=Direction.COUNTERCLOCKWISE, gears=[12,20])
-
 
 # senzory
 color_levy = ColorSensor(Port.S1)
@@ -21,7 +20,7 @@ color_vpravo = ColorSensor(Port.S3)
 color_navigacni = ColorSensor(Port.S4)
 
 # drivebase
-robot = DriveBase(left_motor=levy_motor, right_motor=pravy_motor, wheel_diameter=57, axle_track=226)
+robot = DriveBase(levy_motor, pravy_motor, 57, 226)
 
 def sleduj_caru():
     global cilova_hodnota_sledovani_cary, konstanta_p, zakladni_rychlost_pro_PID, cl_navigacni
@@ -32,14 +31,9 @@ def sleduj_caru():
     # vykonej
     robot.drive(zakladni_rychlost_pro_PID, jak_moc_se_otocit)  # type: ignore
 def jsem_v_cili():
-    otoc_dopredu()
-    otoc_dopredu()
-    ev3.speaker.set_volume(100)
-    ev3.speaker.beep(440, 150)
-    # ev3.speaker.playq_file("rickroll.wav")
-    # pt.wait(36000)
-
-    # exit()
+    # ev3.speaker.set_volume(100)
+    ev3.speaker.play_file("rickroll.mp3")
+    pt.wait(10)
 
 def otoc_uturn():
     print("Uturn")
@@ -88,7 +82,7 @@ def print_debugovaci_vecicky():
     global cl_vlevo_vepredu, cl_vpravo_vepredu, cl_vprostred_vepredu
     global pozice_x_y, otoceni_vuci_startu
 
-    if False:
+    if True:
         print(je_to_bila(cl_vlevo_vepredu), je_to_bila(cl_vprostred_vepredu), je_to_bila(cl_vpravo_vepredu), cl_vlevo_vepredu, cl_vprostred_vepredu, cl_vpravo_vepredu, "vepředu")
         print(je_to_bila(cl_vlevo), je_to_bila(cl_uprostred), je_to_bila(cl_vpravo), cl_vlevo, cl_uprostred, cl_vpravo, "u sebe")
         print(cl_navigacni, "navigační")
@@ -98,12 +92,10 @@ def print_debugovaci_vecicky():
 def make_decision(vstupni_krizovatka):
     global pozice_x_y, otoceni_vuci_startu
     global planek_pro_treumax
-    global memory
 
     # pokud je křižovatka uturn, tak:
     if vstupni_krizovatka == "▫":
         updatuj_pozici_a_rotaci()
-        memory.append("U")
         print("našel jsem uturn")
         # získá políčko
         aktualnI_zpracovavane_policko = planek_pro_treumax[int(pozice_x_y[0])][int(pozice_x_y[1])]
@@ -122,40 +114,35 @@ def make_decision(vstupni_krizovatka):
     elif vstupni_krizovatka == "■":
         print("finish")
         jsem_v_cili()
-        return "out"
     else:
         updatuj_pozici_a_rotaci() 
         aktualnI_zpracovavane_policko = planek_pro_treumax[int(pozice_x_y[0])][int(pozice_x_y[1])]
         if aktualnI_zpracovavane_policko.je_prazdny():
             aktualnI_zpracovavane_policko.nastav_podle_krizovatky(vstupni_krizovatka)
-        print(aktualnI_zpracovavane_policko.print_all())
+
         aktualnI_zpracovavane_policko.prijezd(otoceni_vuci_startu)
 
         x = aktualnI_zpracovavane_policko.get_smer()
-        # print(x)
+        print(x)
 
         rozdil_chteneho_smeru_vuci_rotaci_irl = ((x - otoceni_vuci_startu) + 4) % 4
         print(rozdil_chteneho_smeru_vuci_rotaci_irl, "rozdil")
         if rozdil_chteneho_smeru_vuci_rotaci_irl == 0:
             otoc_dopredu()
-            memory.append("S")
         elif rozdil_chteneho_smeru_vuci_rotaci_irl == 1:
             otoc_doprava()
-            if vstupni_krizovatka in "┌┐┘└":
-                memory.append("R")
         elif rozdil_chteneho_smeru_vuci_rotaci_irl == 2:
             otoc_uturn()
-            memory.append("U")
         elif rozdil_chteneho_smeru_vuci_rotaci_irl == 3:
             otoc_doleva()
-            if vstupni_krizovatka in "┌┐┘└":
-                memory.append("L")
         else:
             print("užij si debugování")
 
+
         updatuj_pozici_a_rotaci()
+        # zapsat směr odjezdu
         aktualnI_zpracovavane_policko.odjezd(otoceni_vuci_startu)
-        print(aktualnI_zpracovavane_policko.print_all())
+
         # další křižovatka (neboli vyskočím do checku a pokračuji)
 def poznej_na_jake_krizovatce_jsem(vstupni_pole, smer_otoceni_robota):
     slovnik_krizovatek = {
@@ -177,11 +164,11 @@ def poznej_na_jake_krizovatce_jsem(vstupni_pole, smer_otoceni_robota):
             if y ==False: klic_k_slovniku += "F"
         klic_k_slovniku += " "
     klic_k_slovniku = klic_k_slovniku[: -1]
-    # print(klic_k_slovniku)
+    print(klic_k_slovniku)
     
-
-    # print(vstupni_pole,smer_otoceni_robota)
+    print(vstupni_pole,smer_otoceni_robota)
     return slovnik_krizovatek[klic_k_slovniku][int(smer_otoceni_robota)]
+
 
 def check():
     global cl_vlevo, cl_vpravo, cl_uprostred
@@ -192,7 +179,7 @@ def check():
 
     co100_cislo_tisknu_pebug += 1
 
-    if co100_cislo_tisknu_pebug % 200 == 0:
+    if co100_cislo_tisknu_pebug % 100 == 0:
         print_debugovaci_vecicky()
     if not(je_to_bila(cl_vlevo) != False and je_to_bila(cl_uprostred) != True and je_to_bila(cl_vpravo) != False):
         robot.stop()
@@ -204,7 +191,9 @@ def check():
             [je_to_bila(cl_vlevo), je_to_bila(cl_uprostred), je_to_bila(cl_vpravo)]]
 
         kriz = poznej_na_jake_krizovatce_jsem(pole_s_hodnotami_pred_robotem, otoceni_vuci_startu)
-        return make_decision(kriz)
+        make_decision(kriz)
+
+
 
 def updatuj_pozici_a_rotaci():
     global pozice_x_y, otoceni_vuci_startu
@@ -224,6 +213,11 @@ def updatuj_pozici_a_rotaci():
         pozice_x_y[1] -= policek_se_posunul  # type: ignore
     else:
         print("MOTHERFUCKER!!!!")
+
+    print(policek_se_posunul, "posun")
+    print(otoceni_vuci_minulemu_startu, "otoceni")
+    print(otoceni_vuci_startu, "wturn")
+
 class policko():
     # None - nevíme, -1 - cesta není, 0 cesta je, neprošli, 1 - c je, jednou p, 2 - cesta je, prošli 2 krát
     def __init__(self):
@@ -242,7 +236,7 @@ class policko():
         global moznosti_krizovatky
 
         moznosti = moznosti_krizovatky.get(krizov) # type: ignore
-        # print(moznosti, krizov)
+        print(moznosti, krizov)
 
         self.nahoru = moznosti[0]     # type: ignore
         self.doprava = moznosti[1]    # type: ignore
@@ -250,14 +244,14 @@ class policko():
         self.doleva = moznosti[3]       # type: ignore
 
         strung = str([self.nahoru, self.doprava, self.dolu, self.doleva]) # type: ignore
-        # print(strung)
+        print(strung)
 
     def prijezd(self, smer):
         if smer == 0: self.dolu += 1          # type: ignore
         if smer == 1: self.doleva += 1        # type: ignore  
         if smer == 2: self.nahoru += 1        # type: ignore
         if smer == 3: self.doprava += 1       # type: ignore
-    ## odřřádkování 
+## odřřádkování
     def odjezd(self, smer):
         if smer == 0: self.nahoru += 1      # type: ignore
         if smer == 1: self.doprava += 1     # type: ignore  
@@ -276,28 +270,15 @@ class policko():
         return strung
 
     def get_smer(self):
-        # print("\n")
-        lst = [self.nahoru, self.doprava, self.dolu, self.doleva]
-        # print(lst)
-        for x in range(len(lst)):
-            if lst[x] == -1:
-                lst[x] = 3
-        
-
-        kam = lst.index(min(lst)) # type: ignore
-        return kam
-
-    def get_smer_2(self):
-        # print("\n")
+        print("\n")
         lst = [self.nahoru, self.doprava, self.dolu, self.doleva]
         print(lst)
         for x in range(len(lst)):
             if lst[x] == -1:
                 lst[x] = 3
-        
-
-        kam = lst.index(1) # type: ignore
+        kam = lst.index(min(lst)) # type: ignore
         print(kam)
+        print("\n")
         return kam
         
         
@@ -322,7 +303,7 @@ class policko():
 
 
 
-pozice_x_y = [16, 16]
+pozice_x_y = [16,16]
 otoceni_vuci_startu = 0
 
 cis = 0
@@ -330,12 +311,10 @@ najeto_na_kolech = []
 najeto_na_kolech2 = []
 
 konstanta_p = 2.5
-zakladni_rychlost_pro_PID = 120 # 65
-robot.settings(120, 400, 65, 180) 
-memory = []
+zakladni_rychlost_pro_PID = 75
 
-threshold_pro_bilou = 35
-threshold_pro_cernou =  11
+threshold_pro_bilou = 26
+threshold_pro_cernou =  16
 cilova_hodnota_sledovani_cary = 12
 
 co100_cislo_tisknu_pebug = 0
@@ -362,11 +341,6 @@ for _ in range(32):
         temp.append(policko())
     planek_pro_treumax.append(temp)
 
-while True:
-    but = ev3.buttons.pressed()
-    print(but)
-    if but != []:
-        break
 # precise position
 ev3.light.off()
 while cl_navigacni != cilova_hodnota_sledovani_cary:
@@ -390,83 +364,4 @@ while True:
     if check() == "out":
         break
 
-for x in planek_pro_treumax:
-    strung = ""
-    for y in x:
-        strung += str(y.print_all())
-        strung += " "
-    if "0" in strung or "1" in strung or "2" in strung or "X" in strung:
-        print(strung)
 
-
-while True:
-    but = ev3.buttons.pressed()
-    print(but)
-    if but != []:
-        break
-# precise position
-ev3.light.off()
-while cl_navigacni != cilova_hodnota_sledovani_cary:
-    if cl_navigacni > cilova_hodnota_sledovani_cary:
-        ev3.light.on(Color.RED)
-    if cl_navigacni < cilova_hodnota_sledovani_cary:
-        ev3.light.on(Color.ORANGE)
-    cl_navigacni = color_navigacni.reflection()
-ev3.light.on(Color.GREEN)
-robot.reset()
-pt.wait(500)
-
-
-def make_decision(vstupni_krizovatka):
-    global pozice_x_y, otoceni_vuci_startu
-    global planek_pro_treumax
-    global memory
-
-    updatuj_pozici_a_rotaci() 
-    aktualnI_zpracovavane_policko = planek_pro_treumax[int(pozice_x_y[0])][int(pozice_x_y[1])]
-    if aktualnI_zpracovavane_policko.je_prazdny():
-        aktualnI_zpracovavane_policko.nastav_podle_krizovatky(vstupni_krizovatka)
-    print(aktualnI_zpracovavane_policko.print_all())
-    aktualnI_zpracovavane_policko.prijezd(otoceni_vuci_startu)
-
-    x = aktualnI_zpracovavane_policko.get_smer_2()
-    # print(x)
-
-    rozdil_chteneho_smeru_vuci_rotaci_irl = ((x - otoceni_vuci_startu) + 4) % 4
-    print(rozdil_chteneho_smeru_vuci_rotaci_irl, "rozdil")
-    if rozdil_chteneho_smeru_vuci_rotaci_irl == 0:
-        otoc_dopredu()
-        memory.append("S")
-    elif rozdil_chteneho_smeru_vuci_rotaci_irl == 1:
-        otoc_doprava()
-        if vstupni_krizovatka in "┌┐┘└":
-            memory.append("R")
-    elif rozdil_chteneho_smeru_vuci_rotaci_irl == 2:
-        otoc_uturn()
-        memory.append("U")
-    elif rozdil_chteneho_smeru_vuci_rotaci_irl == 3:
-        otoc_doleva()
-        if vstupni_krizovatka in "┌┐┘└":
-            memory.append("L")
-    else:
-        print("užij si debugování")
-
-    updatuj_pozici_a_rotaci()
-    aktualnI_zpracovavane_policko.odjezd(otoceni_vuci_startu)
-    print(aktualnI_zpracovavane_policko.print_all())
-    
-
-robot.reset()
-pozice_x_y = [16, 16]
-otoceni_vuci_startu = 0
-
-
-
-precti_senzory_pod_sebou()
-precti_senzory_s_posunem()
-
-while True:
-    precti_senzory_pod_sebou()
-    sleduj_caru()
-    if check() == "out":
-        break
