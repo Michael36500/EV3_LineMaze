@@ -1,5 +1,5 @@
 def load_and_print():
-    file = open("mapa.txt", "r", encoding="utf8")
+    file = open("mapa2.txt", "r", encoding="utf8")
 
     file = file.readlines()
     blud = []
@@ -50,10 +50,19 @@ def posun_na_dalsi_kriz():
         if wturn == 1 or wturn == 3:
             if blud[pozice[0] - rozdil[0]][pozice[1] - rozdil[1]] != "─":
                 break
+def check():
+    global blud
 
-blud = load_and_print()
+    # !!!!!!!!!!!PŘIDAT ODROTOVÁNÍ
 
+    krizovatka = blud[pozice[0] - rozdil[0]][pozice[1] - rozdil[1]]
 
+    x =  make_decision(krizovatka)
+    try:
+        posun_na_dalsi_kriz()
+    except:
+        return x
+    
 def make_decision(kriz):
     global pozice, wturn
     global planek
@@ -65,7 +74,7 @@ def make_decision(kriz):
         wturn = (wturn + 2) % 4 # opačný směr
     elif kriz == "■":
         print("finish")
-        exit()
+        return "out"
     else:
         # když jsem tam nebyl, tak si vložit políčko do planek
         policsto = planek[pozice[0]][pozice[1]]
@@ -84,41 +93,14 @@ def make_decision(kriz):
             # updt wturn
         print()
 
-        if False:
-            while True:
-                inp = input()
-                if str(inp) in "0123":
-                    break
-            wturn = int(inp)
-        else:
-            x = policsto.get_smer()
-            debug.append(x)
-            # print(debug)
-            wturn = x
+        x = policsto.get_smer()
+        wturn = x
         
         # zapsat směr odjezdu
             # updt_kola()
         policsto.odjezd(wturn)
 
         # další křižovatka (neboli vyskočím do checku a pokračuji)
-
-
-
-
-
-
-
-
-def check():
-    global blud
-
-    # !!!!!!!!!!!PŘIDAT ODROTOVÁNÍ
-
-    krizovatka = blud[pozice[0] - rozdil[0]][pozice[1] - rozdil[1]]
-
-    make_decision(krizovatka)
-    
-    posun_na_dalsi_kriz()
 
 class policko():
     # None - nevíme, -1 - cesta není, 0 cesta je, neprošli, 1 - c je, jednou p, 2 - cesta je, prošli 2 krát
@@ -127,13 +109,11 @@ class policko():
         self.doprava = None
         self.doleva = None
         self.dolu = None
-
     def je_prazdny(self):
         if self.nahoru == None and self.doprava == None and self.dolu == None and self.doleva == None:
             return True
         else:
             return False
-    
     def nastav_podle_krizovatky(self, krizov):
         global moznosti_krizovatky
 
@@ -147,19 +127,16 @@ class policko():
 
         strung = str([self.nahoru, self.doprava, self.dolu, self.doleva]) # type: ignore
         print(strung)
-
     def prijezd(self, smer):
         if smer == 0: self.dolu += 1          # type: ignore
         if smer == 1: self.doleva += 1        # type: ignore  
         if smer == 2: self.nahoru += 1        # type: ignore
         if smer == 3: self.doprava += 1       # type: ignore
-## odřřádkování
     def odjezd(self, smer):
         if smer == 0: self.nahoru += 1      # type: ignore
         if smer == 1: self.doprava += 1     # type: ignore  
         if smer == 2: self.dolu += 1        # type: ignore
         if smer == 3: self.doleva += 1      # type: ignore
-
     def print_all(self):
         strung = str([self.nahoru, self.doprava, self.dolu, self.doleva]) # type: ignore
         strung = strung.replace("None", ".")
@@ -170,17 +147,6 @@ class policko():
         strung = strung.replace(" ", "")
         strung += " "
         return strung
-
-    def get_smer(self):
-        lst = [self.nahoru, self.doprava, self.dolu, self.doleva]
-        # print(lst)
-        for x in range(len(lst)):
-            if lst[x] == -1:
-                lst[x] = 3
-        kam = lst.index(min(lst)) # type: ignore
-        return kam
-        
-        
     def gnahoru(self):
         return self.nahoru
     def gdoprava(self):
@@ -189,8 +155,6 @@ class policko():
         return self.doleva
     def gdolu(self):
         return self.dolu
-    
-
     def nnahoru(self, x):
         self.nahoru = x
     def ndoprava(self, x):
@@ -199,15 +163,52 @@ class policko():
         self.dolu = x
     def ndoleva(self, x):
         self.doleva = x
+    def get_smer(self):
+        global wturn
+        lst = [self.nahoru, self.doprava, self.dolu, self.doleva]
+        for x in range(len(lst)):
+            if lst[x] == -1:
+                lst[x] = 3
+
+        # print(lst)
+        
+            
+
+        if str(lst).count("1") == 1:
+            minim = 3
+            for x in range(len(lst)):
+                if lst[x] < minim: # type: ignore
+                    minim = lst[x]
+                    moznosti = []
+                    moznosti.append(x)
+            if len(moznosti) == 1:     # type: ignore
+                return moznosti[0]   # type: ignore
+
+            rnd = random.randint(0, len(moznosti)) - 1   # type: ignore
+            return moznosti[rnd]   # type: ignore
+
+        elif lst[wturn] != 2:
+            kam = (wturn + 2) % 4
+            return kam
+
+        else:
+            minim = 3
+            for x in range(len(lst)):
+                if lst[x] < minim: # type: ignore
+                    minim = lst[x]
+                    moznosti = []
+                    moznosti.append(x)
+            return moznosti[random.randint(0, len(moznosti)) - 1]  # type: ignore
 
 
+blud = load_and_print()
 
-pozice = [4,3]
-start = [4,3]
+pozice = [7,8]
+start = [5,0] # musím být na křižovatce
 rozdil = [pozice[0] - start[0], pozice[1] - start[1]]
 print(rozdil)
 debug = []
-wturn = 1
+wturn = 0
 
 moznosti_krizovatky = {
     "┌" : [-1, 0, 0,-1],
@@ -223,9 +224,9 @@ moznosti_krizovatky = {
 }
 
 planek = []
-for _ in range(16):
+for _ in range(15):
     temp = []
-    for _ in range(16):
+    for _ in range(15):
         temp.append(policko())
     planek.append(temp)
 # for x in planek:
@@ -233,9 +234,18 @@ for _ in range(16):
 
 # memory = []
 import time
-while True:
-    time.sleep(0.)
-    ## posun()
+import random
+
+escribo = open("out.txt", "w")
+
+ext = True
+while ext:
+    # time.sleep(0.02)
     if check() == "out":
-        break
-    # break
+        ext = False
+
+for x in planek:
+    for y in x:
+        escribo.write(y.print_all())
+    escribo.write("\n")
+escribo.write("\n")
