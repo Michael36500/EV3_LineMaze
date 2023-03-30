@@ -24,7 +24,7 @@ def Fibonacci(n):
     
 t1 = time.time()
 # Driver Program
-for x in range(30):
+for x in range(35):
     print(Fibonacci(x), x)
 t2 = time.time()
 print(t2 - t1)

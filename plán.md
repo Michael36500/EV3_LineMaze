@@ -1,0 +1,4 @@
+- [ ] přeprogramovat tak, abych měl funkci rozhodni, a mohl ji jednoduše nahradit
+  - [ ] zjistit co tam mám dát inputnout
+  - [ ] buď
+- [ ] 
